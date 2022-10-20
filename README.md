@@ -1,5 +1,5 @@
 # Zoneminder-Guardline-Numato
-This software is written for Ubuntu 18.04 but should work on other similar OSes.  This software leverages the Zoneminder zmtrigger socket functionality to create a capability to read the state of a Guardline Passive InfraRed (PIR) motion sensor via a Numato IO device connected to the computer via USB.  Within this description, the software will be referred to as ZMPIR.  
+This software (numato.pl) is written for Ubuntu 18.04 but should work on other similar OSes.  This software leverages the Zoneminder zmtrigger socket functionality to create a capability to read the state of a Guardline Passive InfraRed (PIR) motion sensor via a Numato IO device connected to the computer via USB.  Within this description, the software will be referred to as ZMPIR.  
 More info about Zoneminder is here: https://zoneminder.com/ 
 
 More info about the Guardline devices is here: https://www.guardlinesecurity.com/ 
