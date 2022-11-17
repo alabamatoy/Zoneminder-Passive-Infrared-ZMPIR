@@ -1,12 +1,13 @@
 # Zoneminder-Guardline-Numato
-This software (numato.pl) is written for Ubuntu 18.04 but should work on other similar OSes.  This software leverages the Zoneminder zmtrigger socket functionality to create a capability to read the state of a Guardline Passive InfraRed (PIR) motion sensor via a Numato IO device connected to the computer via USB.  Within this description, the software will be referred to as ZMPIR.  
+This software (numato.pl) is written for Ubuntu 18.04 but should work on other similar OSes.  This software leverages the Zoneminder zmtrigger.pl socket functionality to create a capability to read the state of a Guardline Passive InfraRed (PIR) motion sensor via a Numato IO device connected to the computer via USB.  Within this description, the software will be referred to as ZMPIR.  
+
 More info about Zoneminder is here: https://zoneminder.com/ 
 
 More info about the Guardline devices is here: https://www.guardlinesecurity.com/ 
 
 More info about the Numato IO board is here: https://numato.com/product/8-channel-usb-gpio-module-with-analog-inputs/
 
-OVERALL EXPLANATION of the app:  ZMPIR is meant to run on a highly confugrable timing scheme.  I use CRON to fire it off on the hour and half hour.  ZMPIR looks for a semaphore (a simple temp file) to use as a motion detection defeat feature, so the motion detection can be controlled easly through a simple web page (also provided herein, see numato.php and numatostat.php).  If ZMPIR does not see the defeat semaphore, it will check the Numato IO device repeatedly using timing which is highly controllable through variable constants.  When ZMPIR sees a motion detection, it connects to the Zoneminder ZMTrigger.pl socket and turns on recording on a preconfigured set of Zoneminder monitors.  It then waits a preconfigured amount of time, either until its recording time expires or the preset runtime expires.  If the recording time expires before the end of the ZMPIR run it will restart repeatedly checking the Numato device for another motion detection event.  If its overall time hass expired, it will exit, and this should happen a few seconds before another ZMPIR run is initiated by CRON. 
+OVERALL EXPLANATION of the app:  ZMPIR is meant to run on a highly configurable timing scheme.  I use CRON to fire it off on the hour and half hour.  ZMPIR looks for a semaphore (a simple temp file) to use as a motion detection defeat feature, so the motion detection can be controlled easily through a simple web page (also provided herein, see numato.php and numatostat.php).  If ZMPIR does not see the defeat semaphore, it will check the Numato IO device repeatedly using timing which is highly controllable through variable constants.  When ZMPIR sees a motion detection, it connects to the Zoneminder zmtrigger.pl socket and turns on recording on a preconfigured set of Zoneminder monitors.  It then waits a preconfigured amount of time, either until its recording time expires or the preset runtime expires.  If the recording time expires before the end of the ZMPIR run it will restart repeatedly checking the Numato device for another motion detection event.  If its overall time has expired, it will exit, and this should happen a few seconds before another ZMPIR run is initiated by CRON. 
 
 HARDWARE: Here are some pictures of the simple hardware configuration:
 
@@ -22,7 +23,7 @@ Here is the Guardline receiver with the back cover removed.  The Guardline docum
 
 The overall end result is that the Guardline PIR motion detection sensors are used to control Zoneminder video recording, turning on recording when motion is detected, ignoring further motion detection events until recording is completed, then again repeatedly checking for motion detection.
 
-FLAWS: This is a somewhat complicated timing-based process.  Depending on the speed of server running ZMPIR, a motion detection may occur at such a time that when ZMPIR cycles through its processes and check the Numato device, the motion detection signal has already expired.  So sometimes motion detection events are missed, but this is rare on fast servers.  Also, a motion detection event that occurs once recroding has already been commanded will be ignored.  All of the timing can be adjusted, so one can have very long recording times with subsequent motion events being ignored, or very short recording times which with subsequent motion events detected and further recording initiated.
+FLAWS: This is a somewhat complicated timing-based process.  Depending on the speed of server running ZMPIR, a motion detection may occur at such a time that when ZMPIR cycles through its processes and check the Numato device, the motion detection signal has already expired.  So sometimes motion detection events are missed, but this is rare on fast servers.  Also, a motion detection event that occurs once recording has already been commanded will be ignored.  All of the timing can be adjusted, so one can have very long recording times with subsequent motion events being ignored, or very short recording times which with subsequent motion events detected and further recording initiated.
 
 INSTALLATION: ZMPIR is a simple perl script.  It may be placed anywhere on the server.  Following is a listing of the various confguration options in the script, with explanations of each:
 
@@ -52,7 +53,7 @@ my $sleepvalue3 = 605;
 my $sleepvalue4 = 1;
 
 #### number of seconds to allow the script to run, should be slightly longer than sleepvalue2*looplength
-If this script is run on a cron schdule, the actual runtime may be 1-3 seconds longer than this value, so set it slightly less than how often cron is going to fire off the script. Getting minutes desired to run from input to script, first arg value is number of minutes
+If this script is run on a cron schedule, the actual runtime may be 1-3 seconds longer than this value, so set it slightly less than how often cron is going to fire off the script. Getting minutes desired to run from input to script, first arg value is number of minutes
 my $timelimitminutes = $ARGV[0];
 
 #### calculate timelimit in seconds, deduct 10 for end of script and cleanup
