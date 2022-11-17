@@ -10,7 +10,7 @@ OVERALL EXPLANATION of the app:  ZMPIR is meant to run on a highly confugrable t
 
 HARDWARE: Here are some pictures of the simple hardware configuration:
 
-This is the Numato board showing the wires that connect to the Guardline receiver and the 1Kohm resistor.  Not that this tiny little board can actually manage up to 8 Guardline receivers, and each Guardline receiver can monitor up to 4 PIR sensors, so this can become a very robust system with addition of more Guardline devices.  The Numato board has a simple USB connection to the server running ZM and ZMPIR.
+This is the Numato board showing the wires that connect to the Guardline receiver and the 1Kohm resistor.  Note that this tiny little board can actually manage up to 8 Guardline receivers, and each Guardline receiver can monitor up to 4 PIR sensors, so this can become a very robust system with addition of more Guardline devices.  The Numato board has a simple USB connection to the server running ZM and ZMPIR.
 ![PXL_20221025_155530481](https://user-images.githubusercontent.com/28680526/202463775-7c8dfbf6-5fdf-4d55-970c-67155d5512ea.jpg)
 
 Here is the Guardline receiver with the back cover attached:
