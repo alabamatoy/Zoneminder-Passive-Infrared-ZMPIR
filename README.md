@@ -26,31 +26,33 @@ FLAWS: This is a somewhat complicated timing-based process.  Depending on the sp
 
 INSTALLATION: ZMPIR is a simple perl script.  It may be placed anywhere on the server.  Following is a listing of the various confguration options in the script, with explanations of each:
 
-#### This is the USB device where the Numato is connected. Numato has instructions on how to determine this value, but the easiest way is to open a command prompt and enter "lsusb" and note the results.  Then connect the Numato USB connection, and rerun the command - the Numato device should be the only delta between the to runs of the command.  Note that sometimes rights become an issue - if you cannot successfully read the device you may need to address the access rights to the device.  You can confirm that the Numato device is functioning correctly by opening a command prompt and entering "screen /dev/ttyACM0"  You should get a different prompt back, then enter "ver" for version, and you should get back a integer version number of the device.  Then you can enter "gpio read 0" and you should get back the status of shunt number 0 on the GPIO board. To get out of the screen tool, enter "ctrl a" (control and letter a simultaneously) followed by a backslash "\". 
+#### This is the USB device where the Numato is connected.
+Numato has instructions on how to determine this value, but the easiest way is to open a command prompt and enter "lsusb" and note the results.  Then connect the Numato USB connection, and rerun the command - the Numato device should be the only delta between the to runs of the command.  Note that sometimes rights become an issue - if you cannot successfully read the device you may need to address the access rights to the device.  You can confirm that the Numato device is functioning correctly by opening a command prompt and entering "screen /dev/ttyACM0"  You should get a different prompt back, then enter "ver" for version, and you should get back a integer version number of the device.  Then you can enter "gpio read 0" and you should get back the status of shunt number 0 on the GPIO board. To get out of the screen tool, enter "ctrl a" (control and letter a simultaneously) followed by a backslash "\". 
 my $portName = "/dev/ttyACM0";
 
-#### Name of the file that acts as a semaphore for operation of the motion detection.  Existence of this file will cause ZMPIR to immediately exit, and can be used by some other means to control disabling the motion detection sensing.  The PHP files included herein work together to make this capability happen.  If you dont want this, just ignore it as ZMPIR just checks for existence of the file and if it doesnt exist, it continues unaffected.
+#### Name of the file that acts as a semaphore for operation of the motion detection.
+Existence of this file will cause ZMPIR to immediately exit, and can be used by some other means to control disabling the motion detection sensing.  The PHP files included herein work together to make this capability happen.  If you dont want this, just ignore it as ZMPIR just checks for existence of the file and if it doesnt exist, it continues unaffected.
 my $MDSemaphore = "/etc/numato_zmtrigger/numatoMDdisable";
 
 All of these timing values are in seconds unless otherwise noted.
 
-#### seconds to wait after sending query to device - this is how long the routine waits for the Numato device to respond.
+#### seconds to wait after sending query to device
+This is how long the routine waits for the Numato device to respond.
 my $sleepvalue = 1;
 
-#### seconds to wait between checks of alarm status - This is how long the routine waits between check of the Numato device
+#### seconds to wait between checks of alarm status
+This is how long the routine waits between check of the Numato device
 my $sleepvalue2 = 2;
 
 #### number of seconds to wait before checking for motion again AFTER motion was detected
-#### This needs to be a wee bit longer than the cameras are set to record ($alarmtime)
+This needs to be a wee bit longer than the cameras are set to record ($alarmtime)
 my $sleepvalue3 = 605;
 
 #### number of seconds to wait between calls to zmtrigger socket, 1 seems to work well, too fast and zmtrigger ignores the call
 my $sleepvalue4 = 1;
 
 #### number of seconds to allow the script to run, should be slightly longer than sleepvalue2*looplength
-#### if this script is run on a cron schdule, the actual runtime may be 1-3 seconds longer than this value,
-#### so set it slightly less than how often cron is going to fire off the script.
-#### getting minutes desired to run from input to script, first arg value is number of minutes
+If this script is run on a cron schdule, the actual runtime may be 1-3 seconds longer than this value, so set it slightly less than how often cron is going to fire off the script. Getting minutes desired to run from input to script, first arg value is number of minutes
 my $timelimitminutes = $ARGV[0];
 
 #### calculate timelimit in seconds, deduct 10 for end of script and cleanup
@@ -59,18 +61,19 @@ my $timelimit = $timelimitminutes*60 - 10;
 #### number of times the alarm status will be checked, looplength * sleepvalue2 approx accumulated time this script runs
 my $looplength = 900;
 
-#### number of seconds the alarm (recording) should last. Sleepvalue3 and alarmtime should be about the same.
+#### number of seconds the alarm (recording) should last. 
+Sleepvalue3 and alarmtime should be about the same.
 my $alarmtime = 600;
 
 #### where to write the log data
 my $logfilename = "/var/log/numatotrigger.log";
 
-#### location of the zmtrigger socket, this requires OPT_TRIGGERS to be on in ZM config.  See zmtrigger
-#### documentation in Zoneminder documentation or the wiki
+#### location of the zmtrigger socket, this requires OPT_TRIGGERS to be on in ZM config.  
+See zmtrigger documentation in Zoneminder documentation or the wiki
 my $SOCK_PATH = "/var/run/zm/zmtrigger.sock";
 
-#### Which camera ID(s) to turn on to alarm (recording).  Note that sleepvalue4 is the delay between calls to zmtrigger
-#### socket, so consider total time for turning on recording, ie 3 cameras will take 3X sleepvalue4 to turn on recording.
+#### Which camera ID(s) to turn on to alarm (recording).  
+Note that sleepvalue4 is the delay between calls to zmtrigger socket, so consider total time for turning on recording, ie 3 cameras will take 3X sleepvalue4 to turn on recording.
 my @monitorId = ("9","21","17","22","5");  
 
 #### How many cameras to alarm, max is limited by how long each socket call requires
@@ -82,7 +85,8 @@ my $recordState = "on+".$alarmtime;
 #### Set to any value to turn on verbose logging for troubleshooting.  This produces a lot of log data!
 my $verboselog = "";
 
-#### entity to receive emails, can be multiple addresses separated by comma  Note that this can be used to send SMS messatges (ie "texts") to a phone by using the phone service providers interface.  For example, Verizon's is phone_num@vtext.com
+#### entity to receive emails, can be multiple addresses separated by comma  
+Note that this can be used to send SMS messatges (ie "texts") to a phone by using the phone service providers interface.  For example, Verizon's is phone_num@vtext.com
 my $to = 'someone@somewhere.com';
 
 #### from address to use
