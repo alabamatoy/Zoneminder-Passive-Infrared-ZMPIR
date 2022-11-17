@@ -8,6 +8,15 @@ More info about the Numato IO board is here: https://numato.com/product/8-channe
 
 OVERALL EXPLANATION of the app:  ZMPIR is meant to run on a highly confugrable timing scheme.  I use CRON to fire it off on the hour and half hour.  ZMPIR looks for a semaphore (a simple temp file) to use as a motion detection defeat feature, so the motion detection can be controlled easly through a simple web page (also provided herein, see numato.php and numatostat.php).  If ZMPIR does not see the defeat semaphore, it will check the Numato IO device repeatedly using timing which is highly controllable through variable constants.  When ZMPIR sees a motion detection, it connects to the Zoneminder ZMTrigger.pl socket and turns on recording on a preconfigured set of Zoneminder monitors.  It then waits a preconfigured amount of time, either until its recording time expires or the preset runtime expires.  If the recording time expires before the end of the ZMPIR run it will restart repeatedly checking the Numato device for another motion detection event.  If its overall time hass expired, it will exit, and this should happen a few seconds before another ZMPIR run is initiated by CRON. 
 
+HARDWARE: Here are some pictures of the simple hardware configuration:
+
+![PXL_20221025_155530481](https://user-images.githubusercontent.com/28680526/202463775-7c8dfbf6-5fdf-4d55-970c-67155d5512ea.jpg)
+
+![PXL_20221025_160119577](https://user-images.githubusercontent.com/28680526/202463873-4be0a9cf-6cdc-4cdf-ba40-d74c5d9c71c1.jpg)
+
+![PXL_20221117_134728974](https://user-images.githubusercontent.com/28680526/202463941-3cda8d1f-1d06-42a2-9705-e03cb7e637c2.jpg)
+
+
 The overall end result is that the Guardline PIR motion detection sensors are used to control Zoneminder video recording, turning on recording when motion is detected, ignoring further motion detection events until recording is completed, then again repeatedly checking for motion detection.
 
 FLAWS: This is a somewhat complicated timing-based process.  Depending on the speed of server running ZMPIR, a motion detection may occur at such a time that when ZMPIR cycles through its processes and check the Numato device, the motion detection signal has already expired.  So sometimes motion detection events are missed, but this is rare on fast servers.  Also, a motion detection event that occurs once recroding has already been commanded will be ignored.  All of the timing can be adjusted, so one can have very long recording times with subsequent motion events being ignored, or very short recording times which with subsequent motion events detected and further recording initiated.
